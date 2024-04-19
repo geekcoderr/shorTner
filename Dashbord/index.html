@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/ico" href="../favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #62C2CC, #89C4F4);
+            /* Updated gradient background */
+            color: #333;
+            background-image: url('./17860815_rm405-a02d-mockup.jpg');
+            background-image: url('./3439374_61771.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: #1E5656;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* Matte background */
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            /* Box shadow for container */
+            background-color: #fdffff00;
+        }
+
+        .form-container {
+            text-align: center;
+            margin-bottom: 10%;
+            padding: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-top: 5%;
+            width: 40vw;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+            border: #1E5656 2px dashed;
+            outline: none;
+            font-size: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #3BA3A2;
+            /* Matte button color */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            /* Smooth transition */
+            font-size: 15px;
+
+        }
+
+        button:hover {
+            background-color: #20848C;
+            /* Darker color on hover */
+        }
+
+        #shortenedList {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .shortenedItem {
+            background-color: rgba(0, 0, 0, 0.651);
+            /* Transparent black background */
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            /* Shadow for depth */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            /* White text color for contrast */
+        }
+
+        .shortenedItem a {
+            color: #fff;
+            /* White link color for contrast */
+            text-decoration: none;
+            flex: 1;
+            /* Take remaining space */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            /* Truncate long URLs */
+        }
+
+        .shortenedItem a:hover {
+            text-decoration: underline;
+        }
+
+        .shortenedItem .copyButton {
+            background-color: #fff;
+            /* White button background */
+            color: rgba(0, 0, 0, 0.8);
+            /* Dark button text color */
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .shortenedItem .copyButton:hover {
+            background-color: #f3f3f3;
+            /* Light gray hover color */
+        }
+
+
+        @import url('https://fonts.googleapis.com/css2?family=Madimi+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Madimi+One&display=swap');
+
+
+        .head {
+            color: #20848C;
+            font-family: "Madimi One", sans-serif;
+            font-weight: 900;
+            font-size: 40px;
+            padding: 10px;
+            border-radius: 40%;
+            /* Rounded corners for a modern look */
+            text-shadow: -2px -2px 5px rgba(0, 0, 0, 0.333), 2px 2px 5px rgba(0, 0, 0, 0.5);
+            /* Shadow spread in all directions */
+        }
+
+
+        .notice {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease forwards;
+            display: none;
+            color:tomato;
+        }
+
+        
+        .pp{
+            color: #ecebeb;
+            font-family:Arial, Helvetica, sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 800;
+            
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .logo{
+            margin-bottom: 20px;
+            width: 80px;
+        }
+        #generateButton{
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="form-container">
+            <img src="../favicon.png" class="logo" alt="LOGO" />
+            <br>
+            <h1 class="head">URL <short class="pp">shortNer</short> Service</h1>
+            <form id="urlForm">
+                <input type="text" id="urlInput" placeholder="Enter URL & get the shortened URL quick!" required>
+                <br>
+                <button type="submit" id="generateButton">Generate Short URL</button>
+            </form>
+            <ul id="shortenedList"></ul>
+        </div>
+        <div class="notice" id="expiryNotice">Please NOTE: Shortened links are Legal.</div>
+    </div>
+
+    <script>
+        const maschineIp='localhost';
+        document.getElementById('urlForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value;
+
+            fetch(`http://${maschineIp}:8000/url`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'url': url })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Shortened URL:', data.id);
+                    displayShortenedUrl(data.id);
+                    showExpiryNotice();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        function displayShortenedUrl(shortUrl) {
+            const shortenedList = document.getElementById('shortenedList');
+            let listItem = shortenedList.querySelector('.shortenedItem');
+            if (!listItem) {
+                // If no existing list item, create a new one
+                listItem = document.createElement('li');
+                listItem.className = 'shortenedItem';
+                shortenedList.appendChild(listItem);
+            }
+            const link = document.createElement('a');
+            link.href = `http://${maschineIp}:8000/${shortUrl}`;
+            link.textContent = `http://${maschineIp}:8000/${shortUrl}`;
+            link.target=`_blank`;
+            listItem.innerHTML = ''; // Clear existing content
+            listItem.appendChild(link); // Add the link to the list item
+        }
+
+        function showExpiryNotice() {
+            const notice = document.getElementById('expiryNotice');
+            notice.style.display = 'block';
+            setTimeout(() => {
+                notice.style.display = 'none';
+            }, 4000); // Hide notice after 4 seconds
+        }
+    </script>
+
+</body>
+
+</html>
